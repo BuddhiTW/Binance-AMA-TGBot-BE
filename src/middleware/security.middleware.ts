@@ -72,7 +72,7 @@ export function createRateLimitMiddleware() {
     },
     // Default key generator is IPv6-safe
     keyGenerator: (req, res) => {
-      return req.ip;
+      return req.ip || 'unknown';
     },
   });
 }
