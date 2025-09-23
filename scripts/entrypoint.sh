@@ -10,6 +10,11 @@ export NODE_OPTIONS="--dns-result-order=ipv4first --max-http-header-size=16384"
 export GRPC_DNS_RESOLVER="native"
 export UV_THREADPOOL_SIZE=128
 
+# Configure Node.js HTTP timeouts
+export HTTPS_AGENT_TIMEOUT=60000
+export HTTP_AGENT_TIMEOUT=60000
+export NODE_TLS_REJECT_UNAUTHORIZED=0
+
 # Configure additional network settings
 ulimit -n 65536 2>/dev/null || true
 
@@ -34,13 +39,13 @@ else
     echo "TELEGRAM_BOT_TOKEN not set"
 fi
 
-# Migrations
-echo "Running migrations..."
-if npx --yes knex --help >/dev/null 2>&1; then
-  npx knex migrate:latest || true
-else
-  echo "Knex CLI not available; skipping migrations."
-fi
+# Migrations (skip for now to focus on network issue)
+echo "Skipping migrations temporarily to focus on network connectivity issue..."
+# if npx --yes knex --help >/dev/null 2>&1; then
+#   npx knex migrate:latest || true
+# else
+#   echo "Knex CLI not available; skipping migrations."
+# fi
 
 # Start application with increased timeout settings
 exec npm run start:prod

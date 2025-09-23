@@ -37,6 +37,9 @@ services:
     environment:
       - NODE_OPTIONS=--dns-result-order=ipv4first
       - GRPC_DNS_RESOLVER=native
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+      - HTTP_TIMEOUT=60000
+      - HTTPS_TIMEOUT=60000
 
 volumes:
   postgres_data:
