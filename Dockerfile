@@ -23,8 +23,14 @@ RUN npm run build
 ###############################
 FROM node:22-alpine AS runtime
 
-# Install curl for health checks
-RUN apk add --no-cache curl
+# Install curl for health checks and network utilities
+RUN apk add --no-cache curl iputils bind-tools
+
+# Configure IPv4 preference and DNS
+RUN echo 'precedence ::ffff:0:0/96 100' >> /etc/gai.conf && \
+    echo 'nameserver 8.8.8.8' > /etc/resolv.conf && \
+    echo 'nameserver 1.1.1.1' >> /etc/resolv.conf && \
+    echo 'nameserver 8.8.4.4' >> /etc/resolv.conf
 
 WORKDIR /app
 

@@ -70,7 +70,10 @@ export function createRateLimitMiddleware() {
       // Skip rate limiting for webhook endpoints
       return req.path === '/webhook';
     },
-    // Use default, IPv6-safe key generator from express-rate-limit
+    // Default key generator is IPv6-safe
+    keyGenerator: (req, res) => {
+      return req.ip;
+    },
   });
 }
 
