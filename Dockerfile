@@ -42,6 +42,8 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/knexfile.js ./knexfile.js
+COPY --from=builder /app/src/migrations ./src/migrations
+COPY --from=builder /app/src/fixtures ./src/fixtures
 
 # Expose application port
 EXPOSE 3000
