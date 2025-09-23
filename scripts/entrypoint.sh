@@ -20,8 +20,8 @@ nslookup api.telegram.org || echo "DNS lookup failed"
 echo "Ping test to 8.8.8.8:"
 ping -c 1 8.8.8.8 || echo "Ping to 8.8.8.8 failed"
 
-echo "Testing HTTPS connectivity to Telegram API:"
-curl -s --connect-timeout 10 --max-time 30 -I https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getMe || echo "Telegram API connectivity test failed"
+echo "Testing HTTPS connectivity to Telegram API (without token):"
+curl -s --connect-timeout 10 --max-time 30 -I https://api.telegram.org/ || echo "Telegram API base connectivity test failed"
 
 # Migrations
 echo "Running migrations..."
