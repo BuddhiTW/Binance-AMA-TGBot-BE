@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16.3
+    container_name: postgres
+    environment:
+      POSTGRES_USER: binance-ama-bot
+      POSTGRES_PASSWORD: binance-ama-bot
+      POSTGRES_DB: binance-ama-bot
+    # Expose only if you want remote access for debugging; safe to remove in production
+    ports:
+      - "3009:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U binance-ama-bot -d binance-ama-bot"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    container_name: ama-bot
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    command: >
+      sh -c "echo 'precedence ::ffff:0:0/96 100' >> /etc/gai.conf && node dist/src/main.js"
+
+volumes:
+  postgres_data:
