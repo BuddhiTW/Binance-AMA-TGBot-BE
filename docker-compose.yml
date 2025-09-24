@@ -18,6 +18,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
+    networks:
+      - ipv4-only
 
   app:
     build: .
@@ -40,6 +42,17 @@ services:
       - NODE_TLS_REJECT_UNAUTHORIZED=0
       - HTTP_TIMEOUT=60000
       - HTTPS_TIMEOUT=60000
+    networks:
+      - ipv4-only
+    
 
 volumes:
   postgres_data:
+
+networks:
+  ipv4-only:
+    driver: bridge
+    enable_ipv6: false
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
