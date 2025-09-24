@@ -20,6 +20,7 @@ import { ScheduleServicesModule } from "./modules/schedule/schedule.module";
 import * as https from "https";
 import fetch, { RequestInit } from 'node-fetch';
 import dns from 'dns/promises';
+import { HttpsAgent } from 'agentkeepalive';
 
 export async function fetchIPv4(url: string, options?: RequestInit) {
   // Extract hostname
@@ -76,6 +77,12 @@ config();
         const agent = new https.Agent({ family: 4 });
         return {
           token,
+          options: {
+      // Provide a custom agent with family: 4
+      telegram: {
+        agent: new HttpsAgent({ family: 4 }),
+      },
+    },
           // Apply the IPv4-only agent for both standard requests and file uploads
           telegram: {
             agent,
