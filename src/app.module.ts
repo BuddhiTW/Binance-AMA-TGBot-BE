@@ -17,6 +17,7 @@ import { AMAModule } from "./modules/ama/ama.module";
 import { session } from "telegraf";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ScheduleServicesModule } from "./modules/schedule/schedule.module";
+import * as https from "https";
 
 // Load environment variables
 config();
@@ -54,8 +55,15 @@ config();
         if (!token) {
           throw new Error("TELEGRAM_BOT_TOKEN is not defined in the environment variables");
         }
+        // Force IPv4 for all outbound Telegram API requests to avoid IPv6 egress issues
+        const agent = new https.Agent({ family: 4 });
         return {
           token,
+          // Apply the IPv4-only agent for both standard requests and file uploads
+          telegram: {
+            agent,
+            attachmentAgent: agent,
+          },
           launchOptions:
             process.env.ENABLE_WEBHOOK === "true"
               ? {
