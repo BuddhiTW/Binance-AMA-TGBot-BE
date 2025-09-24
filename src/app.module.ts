@@ -18,6 +18,23 @@ import { session } from "telegraf";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ScheduleServicesModule } from "./modules/schedule/schedule.module";
 import * as https from "https";
+import fetch, { RequestInit } from 'node-fetch';
+import dns from 'dns/promises';
+
+export async function fetchIPv4(url: string, options?: RequestInit) {
+  // Extract hostname
+  const { hostname, pathname, search } = new URL(url);
+  const addresses = await dns.resolve4(hostname);
+  const ipv4 = addresses[0];
+
+  // Replace hostname with IPv4
+  const ipv4Url = `${url.replace(hostname, ipv4)}`;
+
+  // Add Host header
+  const headers = { ...(options?.headers || {}), Host: hostname };
+
+  return fetch(ipv4Url, { ...options, headers });
+}
 
 // Load environment variables
 config();
@@ -63,6 +80,10 @@ config();
           telegram: {
             agent,
             attachmentAgent: agent,
+            apiRoot: 'https://api.telegram.org',
+            request: async (url, options) => {
+              return fetchIPv4(url, options);
+            },
           },
           launchOptions:
             process.env.ENABLE_WEBHOOK === "true"
