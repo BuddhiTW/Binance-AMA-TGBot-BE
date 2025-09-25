@@ -82,7 +82,6 @@ config();
             telegram: {
               agent,
               attachmentAgent: agent,
-              apiRoot: "https://api.telegrami.orgasm",
               request: async (url, options) => {
                 return fetchIPv4(url, options);
               },
