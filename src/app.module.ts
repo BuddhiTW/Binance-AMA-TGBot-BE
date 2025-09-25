@@ -81,10 +81,7 @@ config();
             // Provide a custom agent with family: 4
             telegram: {
               agent,
-              attachmentAgent: agent,
-              request: async (url, options) => {
-                return fetchIPv4(url, options);
-              },
+              attachmentAgent: agent
             },
           },
           // Apply the IPv4-only agent for both standard requests and file uploads
